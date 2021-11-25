@@ -1,12 +1,15 @@
 const express = require('express');
-const { send } = require('process');
 const app = express();
+const todos = require('./routes/todos')
+
+// add middleware -- without this we don't have body
+app.use(express.json())
 
 
-app.get('/', (req,res) => {
-    res.send(`<h1>test</h1>`);
-})
 
+
+
+app.use('/api/v1/todos', todos)
 
 
 const port = process.env.PORT || 3000;
