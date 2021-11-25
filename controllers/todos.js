@@ -6,7 +6,8 @@ const getAllTodos = async (req, res) => {
     //we are sending back the object todos. There is a property inside the todos
     //object by the name todos. ES6 allows us to refactor it to ({todos}) as long
     //as the object name matches the property.
-    res.status(201).json({ todos: todos });
+    // res.status(200).json({ todos: todos });
+    res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ msg: error });
   }
@@ -32,18 +33,53 @@ const getTodo = async (req, res) => {
         .status(404)
         .json({ msg: `No todo found with that id: ${todoID}` });
     }
-    res.status(201).json({ success: true, data: todo });
+    // res.status(200).json({ success: true, data: todo });
+    // keep it stupid simple
+    res.status(200).json({ todo });
+  } catch (error) {
+    //will send cast error because the number of characters in ID does not match
+    //the req.params
+    res.status(500).json({ msg: error });
+  }
+};
+
+const updateTodo = async (req, res) => {
+  try {
+    const { id: todoID } = req.params;
+    const todo = await Todo.findOneAndUpdate({ _id: todoID }, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!todo) {
+      res.status(404).json({ msg: `No todo found with that id ${todoID} ` });
+    }
+    // res.status(200).json({ success: true, data: todo });
+    // keep it stupid simple
+    res.status(200).json({ todo });
   } catch (error) {
     res.status(500).json({ msg: error });
   }
 };
 
-const updateTodo = (req, res) => {
-  res.json({ id: req.params.id });
-};
+const deleteTodo = async (req, res) => {
+  try {
+    const { id: todoID } = req.params;
+    const todo = await Todo.findOneAndDelete({ _id: todoID });
+    if (!todo) {
+      return res
+        .status(404)
+        .json({ msg: ` No todo found with this id: ${todoID}` });
+    }
+    // response variations --> options === limitless
+    // key consideration, 'what will you do with the response on the front end?'
+    // res.status(200).json({status:'success', todo: null});
+    // res.status(200).json({ todo});
+    // res.status(200).send();
 
-const deleteTodo = (req, res) => {
-  res.json({ id: req.params.id });
+    res.status(200).json({ success: true, data: todo });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 module.exports = { getAllTodos, createTodo, getTodo, updateTodo, deleteTodo };
