@@ -7,14 +7,13 @@ const todos = require("./routes/todos");
 
 // add middleware -- without this we don't have body
 app.use(express.json());
-
 // serve the static files
+// app.use(express.static(__dirname, "public"));
 
-app.use(express.static(__dirname, "public"));
-
+//routes
 app.use("/api/v1/todos", todos);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);

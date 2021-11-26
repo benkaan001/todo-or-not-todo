@@ -32,7 +32,7 @@ const createTodo = async (req, res) => {
     console.log(req.body);
   } catch (error) {
     res.status(500).json({ msg: error });
-    console.log(error.message);
+    // console.log(error.message);
   }
 };
 
